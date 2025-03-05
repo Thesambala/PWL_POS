@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        $user = UserModel::all();
-        return view('user', ['data' => $user]);
-    }
+    // public function index()
+    // {
+    //     $user = UserModel::all();
+    //     return view('user', ['data' => $user]);
+    // }
 
     public function tambah()
     {
@@ -26,7 +26,7 @@ class UserController extends Controller
     UserModel::create([
         'username' => $request->username,
         'nama' => $request->nama,
-        'password' => Hash::make('$request->password'),
+        'password' => Hash::make($request->password),
         'level_id' => $request->level_id
     ]);
 
@@ -62,6 +62,14 @@ class UserController extends Controller
         $user->delete();
 
         return redirect('/user');
+    }
+
+
+    public function index()
+    {
+        $user = UserModel::with('level')->get();
+
+        return view('user', ['data' => $user]);
     }
 }
 
