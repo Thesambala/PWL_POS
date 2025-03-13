@@ -55,9 +55,9 @@
         var dataUser = $('#table_user').DataTable({
             serverSide: true,
             ajax: {
-                url: "{{ url('user/list') }}",
-                dataType: "json",
-                type: "POST"
+                "url": "{{ url('user/list') }}",
+                "dataType": "json",
+                "type": "POST",
                 "data": function (d) 
                 {
                 d.level_id = $('#level_id').val();
