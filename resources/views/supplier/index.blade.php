@@ -5,77 +5,80 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a href="{{ url('supplier/create') }}" class="btn btn-sm btn-primary mt-1">
-                    <i class="fa fa-plus"></i> Tambah
-                </a>
+                <a class="btn btn-sm btn-primary mt-1" href="{{ url('supplier/create') }}">Tambah</a>
+                <button onclick="modalAction('{{ url('/supplier/create_ajax') }}')" class="btn btn-sm btn-success mt-1">
+                    Tambah Ajax
+                </button>
             </div>
         </div>
-
         <div class="card-body">
-            {{-- Notifikasi sukses --}}
             @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fa fa-check-circle"></i> {{ session('success') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
+                <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-
-            {{-- Notifikasi error --}}
             @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fa fa-exclamation-triangle"></i> {{ session('error') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
+                <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
 
-            {{-- Tabel data supplier --}}
-            <table class="table table-bordered table-striped table-hover table-sm" id="table_supplier" style="width: 100%;">
-                <thead class="thead-light">
+            <table class="table table-bordered table-striped table-hover table-sm" id="table_supplier">
+                <thead>
                     <tr>
-                        <th class="text-center" style="width: 5%;">No</th>
+                        <th>No</th>
                         <th>Nama Supplier</th>
-                        <th style="width: 15%;">Kode</th>
+                        <th>Kode</th>
                         <th>Alamat</th>
-                        <th class="text-center" style="width: 18%;">Aksi</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
             </table>
         </div>
     </div>
+    {{-- Modal Container --}}
+    <div id="modal-crud" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
+        data-keyboard="false" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content"></div>
+        </div>
+    </div>
 @endsection
 
 @push('css')
-    {{-- Custom CSS (jika ada) --}}
 @endpush
 
 @push('js')
     <script>
+        function modalAction(url) {
+                // Kosongkan modal sebelum memuat konten baru
+                $("#modal-crud .modal-content").html("");
+
+                // Panggil modal melalui AJAX
+                $.get(url, function (response) {
+                    $("#modal-crud .modal-content").html(response);
+                    $("#modal-crud").modal("show");
+                });
+            }
+
+            // Bersihkan isi modal setelah ditutup
+            $('#modal-crud').on('hidden.bs.modal', function () {
+                $("#modal-crud .modal-content").html("");
+            });
+
+
+        var dataSupplier
         $(document).ready(function () {
-            $('#table_supplier').DataTable({
-                processing: true,
+            dataSupplier = $('#table_supplier').DataTable({
                 serverSide: true,
                 ajax: {
                     url: "{{ url('supplier/list') }}",
-                    type: "POST",
                     dataType: "json",
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
+                    type: "POST",
                 },
                 columns: [
                     { data: "DT_RowIndex", className: "text-center", orderable: false, searchable: false },
-                    { data: "supplier_nama", orderable: true, searchable: true },
-                    { data: "supplier_kode", orderable: true, searchable: true },
-                    { data: "supplier_alamat", orderable: true, searchable: true },
-                    { data: "aksi", className: "text-center", orderable: false, searchable: false }
-                ],
-                order: [[1, 'asc']], // default sorting berdasarkan nama supplier
-                responsive: true,
-                autoWidth: false
+                    { data: "supplier_nama", className: "", orderable: true, searchable: true },
+                    { data: "supplier_kode", className: "", orderable: true, searchable: true },
+                    { data: "supplier_alamat", className: "", orderable: true, searchable: true },
+                    { data: "aksi", className: "", orderable: false, searchable: false }
+                ]
             });
         });
     </script>
