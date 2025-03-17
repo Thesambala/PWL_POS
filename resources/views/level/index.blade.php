@@ -5,15 +5,16 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a href="{{ url('level/create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
+                <a class="btn btn-sm btn-primary mt-1" href="{{ url('level/create') }}">Tambah</a>
+                <button onclick="modalAction('{{ url('/level/create_ajax') }}')" class="btn btn-sm btn-success mt-1">
+                    Tambah Ajax
+                </button>
             </div>
         </div>
-
         <div class="card-body">
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
@@ -30,6 +31,13 @@
             </table>
         </div>
     </div>
+    {{-- Modal Container --}}
+    <div id="modal-crud" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
+        data-keyboard="false" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content"></div>
+        </div>
+    </div>
 @endsection
 
 @push('css')
@@ -37,20 +45,34 @@
 
 @push('js')
     <script>
+        function modalAction(url) {
+
+                $("#modal-crud .modal-content").html("");
+
+                $.get(url, function (response) {
+                    $("#modal-crud .modal-content").html(response);
+                    $("#modal-crud").modal("show");
+                });
+            }
+
+            $('#modal-crud').on('hidden.bs.modal', function () {
+                $("#modal-crud .modal-content").html("");
+            });
+
+        var dataLevel       
         $(document).ready(function () {
-            $('#table_level').DataTable({
+            dataLevel = $('#table_level').DataTable({
                 serverSide: true,
-                processing: true,
                 ajax: {
                     url: "{{ url('level/list') }}",
-                    type: "POST",
                     dataType: "json",
+                    type: "POST",
                 },
                 columns: [
                     { data: "DT_RowIndex", className: "text-center", orderable: false, searchable: false },
-                    { data: "level_nama", orderable: true, searchable: true },
-                    { data: "level_kode", orderable: true, searchable: true },
-                    { data: "aksi", orderable: false, searchable: false, className: "text-center" }
+                    { data: "level_nama", className: "", orderable: true, searchable: true },
+                    { data: "level_kode", className: "", orderable: true, searchable: true },
+                    { data: "aksi", className: "", orderable: false, searchable: false }
                 ]
             });
         });
