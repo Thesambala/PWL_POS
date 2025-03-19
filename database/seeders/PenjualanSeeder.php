@@ -11,18 +11,10 @@ class PenjualanSeeder extends Seeder
 {
     public function run(): void
     {
-        $userIds = DB::table('users')->pluck('id')->toArray();
-
-        // Cek apakah ada user sebelum memasukkan data
-        if (empty($userIds)) {
-            echo "Seeder PenjualanSeeder dihentikan: Tidak ada data user di tabel users.\n";
-            return;
-        }
-
         $data = [];
         for ($i = 1; $i <= 10; $i++) {
             $data[] = [
-                'user_id' => $userIds[array_rand($userIds)], // Pilih user_id yang valid
+                'user_id' => rand(1,3), // Pilih user_id yang valid
                 'pembeli' => "Pembeli {$i}",
                 'penjualan_kode' => "PJ" . str_pad($i, 3, '0', STR_PAD_LEFT),
                 'penjualan_tanggal' => now(),

@@ -281,11 +281,18 @@ class KategoriController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             $kategori = KategoriModel::find($id);
             if ($kategori) {
-                $kategori->delete();
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Data berhasil dihapus'
-                ]);
+                try {
+                    $kategori->delete();
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Data berhasil dihapus'
+                    ]);
+                } catch (\Exception $e) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Terjadi kesalahan saat menghapus data: data masih berhubungan dengan data lain'
+                    ]);
+                }
             } else {
                 return response()->json([
                     'status' => false,

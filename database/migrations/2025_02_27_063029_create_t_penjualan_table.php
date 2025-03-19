@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->timestamps();
 
             // Foreign Key ke tabel users (sesuaikan dengan tabel yang benar)
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('user_id')->on('m_user');
         });
     }
 
