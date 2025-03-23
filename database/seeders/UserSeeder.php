@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
                 'nama' => 'Manager',
                 'password' => Hash::make('12345'),
             ],
-            [
+            [        
                 'level_id' => 3,
                 'username' => 'Staff',
                 'nama' => 'Staff/Kasir',
