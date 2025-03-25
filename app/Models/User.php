@@ -18,6 +18,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username', // ✅ Tambahkan username karena digunakan dalam login
         'email',
         'password',
     ];
@@ -39,6 +40,6 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password' => 'hashed', // Bisa diganti dengan 'bcrypt' jika pakai Laravel 9 ke bawah
     ];
 }
