@@ -23,14 +23,14 @@
                 <form action="{{ url('register') }}" method="POST">
                     @csrf
                     <div class="input-group mb-3">
-                        <input type="text" name="name" class="form-control" placeholder="Username" required>
+                        <input type="text" name="username" class="form-control" placeholder="Username" required>
                         <div class="input-group-append">
                             <div class="input-group-text"><span class="fas fa-user"></span></div>
                         </div>
                     </div>
 
                     <div class="input-group mb-3">
-                        <input type="email" name="email" class="form-control" placeholder="Email" required>
+                        <input type="text" name="nama" class="form-control" placeholder="Nama" required>
                         <div class="input-group-append">
                             <div class="input-group-text"><span class="fas fa-envelope"></span></div>
                         </div>
