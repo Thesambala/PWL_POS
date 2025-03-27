@@ -30,8 +30,8 @@ Route::post('login', [AuthController::class, 'postlogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
 // Rute untuk Registrasi (Dapat diakses tanpa login)
-Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
+Route::get('register', [AuthController::class, 'register'])->name('register');
+Route::post('register', [AuthController::class, 'postRegister']);
 
 Route::middleware(['auth'])->group(function() { // artinya semua route di dalam group ini harus login dulu
 
