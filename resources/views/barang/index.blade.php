@@ -8,36 +8,37 @@
                 <button onclick="modalAction('{{ url('/barang/import') }}')" class="btn btn-sm btn-info mt-1">Import
                     Barang
                 </button>
-                <a href="{{ url('barang/create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
-                <button onclick="modalAction('{{ url('/user/create_ajax') }}')" class="btn btn-sm btn-success mt-1">
+                <a href="{{ url('/barang/export_excel') }}" class="btn btn-sm btn-primary mt-1">Export Barang</a>
+                <button onclick="modalAction('{{ url('/barang/create_ajax') }}')" class="btn btn-sm btn-success mt-1">
                     Tambah Ajax
                 </button>
             </div>
         </div>
-
         <div class="card-body">
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
 
-            {{-- Filter Kategori --}}
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <select class="form-control" id="kategori_id" name="kategori_id">
-                        <option value="">- Semua Kategori -</option>
-                        @foreach ($kategori as $item)
-                            <option value="{{ $item->kategori_id }}">{{ $item->kategori_nama }}</option>
-                        @endforeach
-                    </select>
-                    <small class="form-text text-muted">Filter berdasarkan kategori</small>
+            {{-- Filter --}}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <select class="form-control" id="kategori_id" name="kategori_id">
+                                <option value="">- Semua Kategori -</option>
+                                @foreach($kategori as $item)
+                                    <option value="{{ $item->kategori_id }}">{{ $item->kategori_nama }}</option>
+                                @endforeach
+                            </select>
+                            <small class="form-text text-muted">Kategori Barang</small>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {{-- Tabel Data Barang --}}
             <table class="table table-bordered table-striped table-hover table-sm" id="table_barang">
                 <thead>
                     <tr>
@@ -52,6 +53,7 @@
             </table>
         </div>
     </div>
+    {{-- Modal Container --}}
     <div id="modal-crud" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
         data-keyboard="false" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -63,17 +65,24 @@
 @push('js')
     <script>
         function modalAction(url) {
-            // Kosongkan modal sebelum memuat konten baru
-            $("#modal-crud .modal-content").html("");
+                // Kosongkan modal sebelum memuat konten baru
+                $("#modal-crud .modal-content").html("");
 
-            // Panggil modal melalui AJAX
-            $.get(url, function (response) {
-                $("#modal-crud .modal-content").html(response);
-                $("#modal-crud").modal("show");
+                // Panggil modal melalui AJAX
+                $.get(url, function (response) {
+                    $("#modal-crud .modal-content").html(response);
+                    $("#modal-crud").modal("show");
+                });
+            }
+
+            // Bersihkan isi modal setelah ditutup
+            $('#modal-crud').on('hidden.bs.modal', function () {
+                $("#modal-crud .modal-content").html("");
             });
-        }
+
+        var dataBarang
         $(document).ready(function () {
-            var dataBarang = $('#table_barang').DataTable({
+                dataBarang = $('#table_barang').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
@@ -84,7 +93,7 @@
                     }
                 },
                 columns: [
-                    { data: "barang_id", className: "text-center", orderable: true, searchable: false },
+                    { data: "DT_RowIndex", className: "text-center", orderable: false, searchable: false },
                     { data: "barang_nama", className: "", orderable: true, searchable: true },
                     { data: "kategori.kategori_nama", className: "", orderable: true, searchable: true },
                     { data: "harga_beli", className: "text-right", orderable: true, searchable: false },
@@ -92,8 +101,6 @@
                     { data: "aksi", className: "text-center", orderable: false, searchable: false }
                 ]
             });
-
-            // Reload tabel saat filter kategori berubah
             $('#kategori_id').on('change', function () {
                 dataBarang.ajax.reload();
             });
