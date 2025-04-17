@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -24,12 +25,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::pattern('id', '[0-9]+'); // artinya ketika ada parameter {id}, maka harus berupa angka
 
-// Rute untuk Login & Logout
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'postlogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
-
-// Rute untuk Registrasi (Dapat diakses tanpa login)
 Route::get('register', [AuthController::class, 'register'])->name('register');
 Route::post('register', [AuthController::class, 'postRegister']);
 
@@ -146,4 +144,12 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
         Route::get('/barang/export_excel', [BarangController::class, 'export_excel']);
         Route::get('/barang/export_pdf', [BarangController::class, 'export_pdf']);
     });
+
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
+        Route::post('/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/delete', [ProfileController::class, 'delete'])->name('profile.delete');
+    });
+
+
 });
